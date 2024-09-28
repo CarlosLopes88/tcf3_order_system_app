@@ -25,11 +25,6 @@ jobs:
       run: npm install
       working-directory: ./order-system-app
 
-    # Build do aplicativo Node.js
-    - name: Build order system app
-      run: npm run build
-      working-directory: ./order-system-app
-
     # Compactar o app para deploy
     - name: Package app
       run: zip -r order-system-app.zip .
