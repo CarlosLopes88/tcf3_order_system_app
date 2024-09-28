@@ -25,6 +25,7 @@ jobs:
       run: npm install
       working-directory: ./order-system-app
 
+    # Remover o comando de build se ele não existir no package.json
     # Compactar o app para deploy
     - name: Package app
       run: zip -r order-system-app.zip .
@@ -42,16 +43,11 @@ jobs:
     - name: Setup kubectl
       uses: azure/setup-kubectl@v1
       with:
-        version: 'v1.22.0'  # Ajuste a versão do kubectl de acordo com seu cluster
+        version: 'v1.22.0' # Ajuste a versão do kubectl de acordo com seu cluster
 
     # Obter o contexto do cluster EKS
     - name: Update kubeconfig
-      run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name <nome-do-cluster-EKS>
-
-    # Criar o secret no Kubernetes para armazenar o token PagSeguro
-    - name: Create Kubernetes secret for PagSeguro
-      run: |
-        kubectl create secret generic pagseguro-secret --from-literal=pagseguro-auth-token=${{ secrets.PAGSEGURO_AUTH_TOKEN }}
+      run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name my-eks-cluster  # Aqui está o nome correto
 
     # Aplicar o deployment e service do app no Kubernetes
     - name: Deploy app to Kubernetes
