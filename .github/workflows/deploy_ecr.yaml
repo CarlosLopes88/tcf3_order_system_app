@@ -1,0 +1,37 @@
+name: Build and Push Docker Image to Amazon ECR
+
+on:
+  push:
+    branches:
+      - main  # ou a branch que deseja monitorar
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout do código
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Autenticar no Amazon ECR
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        region: ${{ secrets.AWS_REGION }}
+
+    # Configurar o Docker Buildx
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # Construir a imagem Docker
+    - name: Build Docker image
+      run: |
+        docker build -t order-system-app:latest .
+        docker tag order-system-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest
+
+    # Fazer o push da imagem para o Amazon ECR
+    - name: Push Docker image to Amazon ECR
+      run: |
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest
