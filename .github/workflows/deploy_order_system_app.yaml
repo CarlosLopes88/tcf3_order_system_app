@@ -25,18 +25,12 @@ jobs:
       run: npm install
       working-directory: ./order-system-app
 
-    # Build do aplicativo Node.js
-    - name: Build order system app
-      run: npm run build
+    # Compactar o app para deploy
+    - name: Package app
+      run: zip -r order-system-app.zip .
       working-directory: ./order-system-app
 
-    # Substituir placeholders com AWS_ACCOUNT_ID e AWS_REGION
-    - name: Replace AWS Account ID and Region in Deployment YAML
-      run: |
-        sed -i 's/<aws-account-id>/${{ secrets.AWS_ACCOUNT_ID }}/g' ./kubernetes-infra/k8s/appnode-deployment.yaml
-        sed -i 's/<regiao>/${{ secrets.AWS_REGION }}/g' ./kubernetes-infra/k8s/appnode-deployment.yaml
-
-    # Configurar as credenciais AWS com secrets
+    # Configurar as credenciais AWS com secrets para acesso ao EKS
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -44,17 +38,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    # Instalar kubectl
+    # Instalar kubectl para interação com o cluster Kubernetes (EKS)
     - name: Setup kubectl
       uses: azure/setup-kubectl@v1
       with:
-        version: 'v1.22.0'
+        version: 'v1.22.0' # Ajuste a versão do kubectl de acordo com seu cluster
 
-    # Atualizar kubeconfig para o cluster EKS
+    # Obter o contexto do cluster EKS
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name my-eks-cluster
 
-    # Aplicar o deployment e o service do app no Kubernetes
+    # Aplicar o deployment e service do app no Kubernetes
     - name: Deploy app to Kubernetes
       run: |
         kubectl apply -f ./kubernetes-infra/k8s/appnode-deployment.yaml

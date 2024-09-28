@@ -1,9 +1,9 @@
-name: Build and Push Docker Image to Amazon ECR
+name: Deploy ECR
 
 on:
   push:
     branches:
-      - main  # ou a branch que deseja monitorar
+      - main
 
 jobs:
   deploy:
@@ -14,24 +14,25 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Autenticar no Amazon ECR
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+    # Configurar as credenciais AWS com secrets
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        region: ${{ secrets.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
-    # Configurar o Docker Buildx
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+    # Fazer login no Amazon ECR
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
 
-    # Construir a imagem Docker
+    # Build da imagem Docker
     - name: Build Docker image
       run: |
-        docker build -t order-system-app:latest .
+        docker build -t order-system-app .
         docker tag order-system-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest
 
-    # Fazer o push da imagem para o Amazon ECR
+    # Push da imagem Docker para o ECR
     - name: Push Docker image to Amazon ECR
       run: |
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest
