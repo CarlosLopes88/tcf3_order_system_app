@@ -10,31 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout do código do repositório atual (tcf3_order_system_app)
-    - name: Checkout Order System App Repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    # Verificar se a pasta k8s foi transferida corretamente
-    - name: List k8s Files
-      run: ls -la ./order-system-app/k8s/
+    - name: Replace placeholders in Kubernetes manifest
+      run: |
+        sed -i 's/<aws-account-id>/${{ secrets.AWS_ACCOUNT_ID }}/g' ./order-system-app/k8s/appnode-deployment.yaml
+        sed -i 's/<regiao>/${{ secrets.AWS_REGION }}/g' ./order-system-app/k8s/appnode-deployment.yaml
 
-    # Configurar o Node.js
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20'
-
-    # Instalar dependências
-    - name: Install dependencies
-      run: npm install
-      working-directory: ./order-system-app
-
-    # Build e empacotamento do app (se necessário)
-    - name: Build and package app
-      run: npm run build
-      working-directory: ./order-system-app
-
-    # Configurar as credenciais AWS com secrets para acesso ao EKS
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -42,16 +25,18 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    # Obter o contexto do cluster EKS
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.22.0'
+
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name my-eks-cluster
 
-    # Aplicar o deployment e service do app no Kubernetes
     - name: Deploy app to Kubernetes
       run: |
-        kubectl apply -f ./order-system-app/k8s/appnode-deployment.yaml --validate=false
-        kubectl apply -f ./order-system-app/k8s/appnode-service.yaml --validate=false
+        kubectl apply -f ./order-system-app/k8s/appnode-deployment.yaml
+        kubectl apply -f ./order-system-app/k8s/appnode-service.yaml
 
-    # Verificar o status do deployment
     - name: Verify Deployment
       run: kubectl rollout status deployment/node-app
