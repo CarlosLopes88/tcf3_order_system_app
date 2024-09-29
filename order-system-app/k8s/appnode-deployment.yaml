@@ -20,24 +20,11 @@ spec:
         - containerPort: 3000
         env:
         - name: MONGO_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: username
+          value: "${{ secrets.DB_MASTER_USERNAME }}"
         - name: MONGO_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: password
-        - name: MONGO_HOST
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: host
-        - name: MONGO_PORT
-          value: "27017"
-        - name: MONGO_DATABASE
-          value: "order_system"
+          value: "${{ secrets.DB_MASTER_PASSWORD }}"
+        - name: MONGO_URI
+          value: "${{ secrets.DB_URI }}"
         resources:
           limits:
             memory: "64Mi"
