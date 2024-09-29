@@ -40,8 +40,8 @@ spec:
           value: "order_system"
         resources:
           limits:
-            memory: "64Mi"
-            cpu: "250m"
-          requests:
             memory: "32Mi"
-            cpu: "125m"
+            cpu: "100m"
+          requests:
+            memory: "16Mi"
+            cpu: "50m"
