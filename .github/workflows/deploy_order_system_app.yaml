@@ -13,13 +13,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Substituir os placeholders do Kubernetes manifest
-    - name: Replace placeholders in Kubernetes manifest
-      run: |
-        sed -i 's/<aws-account-id>/${{ secrets.AWS_ACCOUNT_ID }}/g' ./order-system-app/k8s/appnode-deployment.yaml
-        sed -i 's/<regiao>/${{ secrets.AWS_REGION }}/g' ./order-system-app/k8s/appnode-deployment.yaml
-
-    # Configurar as credenciais da AWS
+    # Configurar as credenciais AWS
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -27,17 +21,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    # Instalar kubectl
+    # Instalar kubectl para interagir com o cluster Kubernetes (EKS)
     - name: Install kubectl
       uses: azure/setup-kubectl@v1
       with:
         version: 'v1.22.0'
 
-    # Atualizar o kubeconfig para conectar ao EKS
+    # Atualizar o kubeconfig para se conectar ao EKS
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name my-eks-cluster
 
-    # Fazer o deploy no Kubernetes
+    # Fazer o deploy do app para o Kubernetes
     - name: Deploy app to Kubernetes
       run: |
         kubectl apply -f ./order-system-app/k8s/appnode-deployment.yaml
