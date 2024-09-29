@@ -34,11 +34,23 @@ jobs:
       run: npm run build
       working-directory: ./order-system-app
 
+    # Configurar as credenciais AWS com secrets para acesso ao EKS
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    # Obter o contexto do cluster EKS
+    - name: Update kubeconfig
+      run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name my-eks-cluster
+
     # Aplicar o deployment e service do app no Kubernetes
     - name: Deploy app to Kubernetes
       run: |
-        kubectl apply -f ./order-system-app/k8s/appnode-deployment.yaml
-        kubectl apply -f ./order-system-app/k8s/appnode-service.yaml
+        kubectl apply -f ./order-system-app/k8s/appnode-deployment.yaml --validate=false
+        kubectl apply -f ./order-system-app/k8s/appnode-service.yaml --validate=false
 
     # Verificar o status do deployment
     - name: Verify Deployment
