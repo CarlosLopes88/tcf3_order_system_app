@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Construindo a string de conexão com o MongoDB a partir das variáveis de ambiente
-const mongoUri = process.env.MONGO_URI || `mongodb://${process.env.DB_MASTER_USERNAME}:${process.env.DB_MASTER_PASSWORD}@localhost:27017/order_system`;
+const mongoUri = process.env.DB_URI || `mongodb://${process.env.DB_MASTER_USERNAME}:${process.env.DB_MASTER_PASSWORD}@localhost:27017/order_system`;
 
 // Exibindo a URI (sem as credenciais) para depuração
 console.log('Conectando ao MongoDB com URI:', mongoUri.replace(/\/\/.*@/, '//****:****@'));
@@ -23,4 +23,4 @@ const connectToMongo = async () => {
 // Invocando a função de conexão ao MongoDB
 connectToMongo();
 
-module.exports = mongoose; // Exporta o mongoose para reutilização
+module.exports = mongoose;

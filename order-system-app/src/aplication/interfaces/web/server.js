@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const path = require('path');
-const db = require('../../../infrastructure/dbconnect'); // Conexão com MongoDB
+const db = require('../../../infrastructure/dbconnect');
 
 // Repositórios e clientes HTTP
 const ClienteRepository = require('../../../infrastructure/repositories/clienteRepository');
@@ -44,17 +44,22 @@ app.use((req, res, next) => {
     next();
 });
 
-// Configurações de rotas e Swagger
-const PORT = process.env.PORT || 3000;
-const swaggerDocument = YAML.load(path.join(__dirname, '../../../../docs/openapi.yaml'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Conexão com o MongoDB
+db.once('open', () => {
+    console.log('Application Connected to MongoDB');
+    const PORT = process.env.PORT || 3000;
 
-// Rotas da aplicação
-app.use('/api/cliente', clienteRoutes(clienteRepository));
-app.use('/api/pedido', pedidoRoutes(pedidoService));
-app.use('/api/produto', produtoRoutes(produtoRepository));
-app.use('/api/pagamento', pagamentoRoutes(pagamentoService));
-app.use('/api/webhook', webhookRoutes());
+    // Documentação Swagger
+    const swaggerDocument = YAML.load(path.join(__dirname, '../../../../docs/openapi.yaml'));
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Iniciar o servidor
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+    // Rotas da aplicação, passando as instâncias dos casos de uso como middleware
+    app.use('/api/cliente', clienteRoutes(clienteRepository));
+    app.use('/api/pedido', pedidoRoutes(pedidoService));
+    app.use('/api/produto', produtoRoutes(produtoRepository));
+    app.use('/api/pagamento', pagamentoRoutes(pagamentoService));
+    app.use('/api/webhook', webhookRoutes());
+
+    // Iniciar o servidor
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+});
