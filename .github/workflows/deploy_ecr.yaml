@@ -1,5 +1,6 @@
-name: Deploy ECR
+name: Deploy ECR  # Nome do workflow que será executado para realizar o deploy no ECR.
 
+# O workflow será acionado quando houver um push na branch 'main'.
 on:
   push:
     branches:
@@ -7,32 +8,35 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # O job será executado em um ambiente Ubuntu mais recente.
 
     steps:
-    # Checkout do código
+    
+    # 1. Checkout do código do repositório
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2  # Usa a ação oficial do GitHub para fazer o checkout do código na versão 2.
 
-    # Configurar as credenciais AWS com secrets
+    # 2. Configura as credenciais da AWS usando secrets armazenados no GitHub
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1  # Usa a ação oficial da AWS para configurar as credenciais da AWS.
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Acessa a chave de acesso da AWS armazenada nos GitHub Secrets.
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Acessa a chave secreta da AWS.
+        aws-region: ${{ secrets.AWS_REGION }}  # Define a região da AWS onde os recursos estão.
 
-    # Fazer login no Amazon ECR
+    # 3. Fazer login no Amazon ECR para permitir o push de imagens Docker
     - name: Login to Amazon ECR
-      uses: aws-actions/amazon-ecr-login@v1
+      uses: aws-actions/amazon-ecr-login@v1  # Usa a ação oficial da AWS para autenticar o GitHub no Amazon ECR.
 
-    # Build da imagem Docker
+    # 4. Build da imagem Docker
     - name: Build Docker image
       run: |
-        docker build -t order-system-app ./order-system-app
-        docker tag order-system-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest
-
-    # Push da imagem Docker para o ECR
+        docker build -t order-system-app ./order-system-app  # Constrói a imagem Docker localmente com a tag 'order-system-app' a partir do diretório 'order-system-app'.
+        docker tag order-system-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest  
+    # A imagem é "tagueada" para o ECR usando o formato adequado: '<AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/order-system-app:latest'.
+    
+    # 5. Push da imagem Docker para o ECR
     - name: Push Docker image to Amazon ECR
       run: |
-        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest  
+        # Faz o push da imagem para o repositório ECR correspondente ao AWS_ACCOUNT_ID na região especificada.
