@@ -26,14 +26,13 @@ jobs:
     - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
 
-    # Build da imagem Docker
+    # Build da imagem Docker no diretório correto
     - name: Build Docker image
       run: |
-        docker build -t order-system-app .
+        docker build -t order-system-app ./order-system-app  # Ajuste o caminho aqui, onde o Dockerfile está
         docker tag order-system-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest
 
     # Push da imagem Docker para o ECR
     - name: Push Docker image to Amazon ECR
       run: |
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest
-        
