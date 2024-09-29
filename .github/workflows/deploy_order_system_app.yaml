@@ -25,7 +25,22 @@ jobs:
       run: npm install
       working-directory: ./order-system-app
 
-    # Remover o passo de build, se não necessário
+    # Verificar se o caminho para o appnode-deployment.yaml e appnode-service.yaml existe
+    - name: List Kubernetes files
+      run: ls -la ./kubernetes-infra/k8s/
+
+    # Verifique se os arquivos realmente existem e faça o deploy
+    - name: Check if deployment and service files exist
+      run: |
+        if [ -f "./kubernetes-infra/k8s/appnode-deployment.yaml" ] && [ -f "./kubernetes-infra/k8s/appnode-service.yaml" ]; then
+          echo "Deployment and service files exist. Proceeding with deployment..."
+          kubectl apply -f ./kubernetes-infra/k8s/appnode-deployment.yaml
+          kubectl apply -f ./kubernetes-infra/k8s/appnode-service.yaml
+        else
+          echo "Error: Deployment or service file not found!"
+          exit 1
+        fi
+
     # Configurar as credenciais AWS com secrets para acesso ao EKS
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -34,18 +49,16 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    # Instalar kubectl para interação com o cluster Kubernetes (EKS)
+    # Instalar o kubectl para interação com o cluster Kubernetes (EKS)
     - name: Setup kubectl
       uses: azure/setup-kubectl@v1
       with:
-        version: 'v1.22.0'  # Ajuste a versão do kubectl de acordo com seu cluster
+        version: 'v1.22.0' # Ajuste a versão do kubectl de acordo com seu cluster
 
     # Obter o contexto do cluster EKS
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name my-eks-cluster
 
-    # Aplicar o deployment e service do app no Kubernetes
-    - name: Deploy app to Kubernetes
-      run: |
-        kubectl apply -f ./kubernetes-infra/k8s/appnode-deployment.yaml
-        kubectl apply -f ./kubernetes-infra/k8s/appnode-service.yaml
+    # Verificar o status do deployment
+    - name: Verify Deployment
+      run: kubectl rollout status deployment/node-app
