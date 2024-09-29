@@ -6,10 +6,10 @@ const path = require('path');
 const db = require('../../../infrastructure/dbconnect');
 
 // Repositórios e clientes HTTP
-const ClienteRepository = require('../../infrastructure/repositories/clienteRepository');
-const PedidoRepository = require('../../infrastructure/repositories/pedidoRepository');
-const ProdutoRepository = require('../../infrastructure/repositories/produtoRepository');
-const PagamentoHttpClient = require('../../infrastructure/http/pagamentoHttpClient');
+const ClienteRepository = require('../../../infrastructure/repositories/clienteRepository');
+const PedidoRepository = require('../../../infrastructure/repositories/pedidoRepository');
+const ProdutoRepository = require('../../../infrastructure/repositories/produtoRepository');
+const PagamentoHttpClient = require('../../../infrastructure/http/pagamentoHttpClient');
 
 // Casos de uso (use cases)
 const PagamentoService = require('../../core/use_cases/pagamentoService');
