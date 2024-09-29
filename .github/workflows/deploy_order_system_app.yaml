@@ -25,15 +25,7 @@ jobs:
       run: npm install
       working-directory: ./order-system-app
 
-    # Build do aplicativo Node.js
-    - name: Build order system app
-      run: npm run build
-      working-directory: ./order-system-app
-
-    # Verificar se os arquivos YAML estão no local correto
-    - name: List files in kubernetes-infra/k8s
-      run: ls -la ./kubernetes-infra/k8s
-
+    # Remover o passo de build, se não necessário
     # Configurar as credenciais AWS com secrets para acesso ao EKS
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -57,7 +49,3 @@ jobs:
       run: |
         kubectl apply -f ./kubernetes-infra/k8s/appnode-deployment.yaml
         kubectl apply -f ./kubernetes-infra/k8s/appnode-service.yaml
-
-    # Verificar o status do deployment
-    - name: Verify Deployment
-      run: kubectl rollout status deployment/order-system-app

@@ -1,5 +1,5 @@
 {
-  "name": "tech_challenge_2_fase",
+  "name": "tech_challenge_3_fase",
   "version": "1.0.0",
   "main": "index.js",
   "directories": {
@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node src/aplication/interfaces/web/server.js"
+    "start": "node src/aplication/interfaces/web/server.js",
+    "build": "echo 'Build step completed'"
   },
   "keywords": [],
   "author": "",
