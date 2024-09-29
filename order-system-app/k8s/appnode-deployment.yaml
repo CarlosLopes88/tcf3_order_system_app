@@ -19,11 +19,11 @@ spec:
         ports:
         - containerPort: 3000
         env:
-        - name: MONGO_USERNAME
+        - name: DB_MASTER_USERNAME
           value: "${{ secrets.DB_MASTER_USERNAME }}"
-        - name: MONGO_PASSWORD
+        - name: DB_MASTER_PASSWORD
           value: "${{ secrets.DB_MASTER_PASSWORD }}"
-        - name: MONGO_URI
+        - name: DB_URI
           value: "${{ secrets.DB_URI }}"
         resources:
           limits:
