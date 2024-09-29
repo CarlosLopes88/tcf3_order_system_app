@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: node-app
-        imagePullPolicy: IfNotPresent  # Atualizado para buscar do ECR
-        image: <aws-account-id>.dkr.ecr.<regiao>.amazonaws.com/order-system-app:latest
+        imagePullPolicy: IfNotPresent  # Atualizado para usar a última imagem disponível se não estiver em cache
+        image: 740588470221.dkr.ecr.us-east-1.amazonaws.com/order-system-app:latest  # Endereço da imagem diretamente inserido
         ports:
         - containerPort: 3000
         env:
@@ -40,8 +40,8 @@ spec:
           value: "order_system"
         resources:
           limits:
-            memory: "32Mi"
-            cpu: "100m"
+            memory: "64Mi"
+            cpu: "250m"
           requests:
-            memory: "16Mi"
-            cpu: "50m"
+            memory: "32Mi"
+            cpu: "125m"
