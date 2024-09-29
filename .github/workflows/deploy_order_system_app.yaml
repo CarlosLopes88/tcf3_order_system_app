@@ -10,9 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout do código
-    - name: Checkout code
+    # Checkout do código do repositório atual (tcf3_order_system_app)
+    - name: Checkout Order System App Repository
       uses: actions/checkout@v2
+
+    # Verificar se a pasta k8s foi transferida corretamente
+    - name: List k8s Files
+      run: ls -la ./order-system-app/k8s/
 
     # Configurar o Node.js
     - name: Set up Node.js
@@ -30,15 +34,11 @@ jobs:
       run: npm run build
       working-directory: ./order-system-app
 
-    # Listar arquivos YAML de deployment para garantir que eles estão acessíveis
-    - name: List Kubernetes Infra Files
-      run: ls -la ./k8s/
-
     # Aplicar o deployment e service do app no Kubernetes
     - name: Deploy app to Kubernetes
       run: |
-        kubectl apply -f ./k8s/appnode-deployment.yaml
-        kubectl apply -f ./k8s/appnode-service.yaml
+        kubectl apply -f ./order-system-app/k8s/appnode-deployment.yaml
+        kubectl apply -f ./order-system-app/k8s/appnode-service.yaml
 
     # Verificar o status do deployment
     - name: Verify Deployment
