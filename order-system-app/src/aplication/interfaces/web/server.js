@@ -12,15 +12,15 @@ const ProdutoRepository = require('../../../infrastructure/repositories/produtoR
 const PagamentoHttpClient = require('../../../infrastructure/http/pagamentoHttpClient');
 
 // Casos de uso (use cases)
-const PagamentoService = require('../../core/use_cases/pagamentoService');
-const PedidoService = require('../../core/use_cases/pedidoUseServices');
+const PagamentoService = require('../../../core/user_cases/pagamentoUseServices');
+const PedidoService = require('../../../core/use_cases/pedidoUseServices');
 
 // Rotas
-const clienteRoutes = require('../interfaces/api/clienteRoutes');
-const pedidoRoutes = require('../interfaces/api/pedidoRoutes');
-const produtoRoutes = require('../interfaces/api/produtoRoutes');
-const pagamentoRoutes = require('../interfaces/api/pagamentoRoutes');
-const webhookRoutes = require('../interfaces/api/webhookRoutes');
+const clienteRoutes = require('../../../aplication/interfaces/api/clienteRoutes');
+const pedidoRoutes = require('../../../aplication/interfaces/api/pedidoRoutes');
+const produtoRoutes = require('../../../aplication/interfaces/api/produtoRoutes');
+const pagamentoRoutes = require('../../../aplication/interfaces/api/pagamentoRoutes');
+const webhookRoutes = require('../../../aplication/interfaces/api/webhookRoutes');
 
 // Instanciando repositórios
 const clienteRepository = new ClienteRepository();
