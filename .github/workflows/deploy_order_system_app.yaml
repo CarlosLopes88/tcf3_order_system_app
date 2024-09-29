@@ -25,10 +25,14 @@ jobs:
       run: npm install
       working-directory: ./order-system-app
 
-    # Compactar o app para deploy
-    - name: Package app
-      run: zip -r order-system-app.zip .
+    # Build do aplicativo Node.js
+    - name: Build order system app
+      run: npm run build
       working-directory: ./order-system-app
+
+    # Verificar se os arquivos YAML estão no local correto
+    - name: List files in kubernetes-infra/k8s
+      run: ls -la ./kubernetes-infra/k8s
 
     # Configurar as credenciais AWS com secrets para acesso ao EKS
     - name: Configure AWS credentials
@@ -42,7 +46,7 @@ jobs:
     - name: Setup kubectl
       uses: azure/setup-kubectl@v1
       with:
-        version: 'v1.22.0' # Ajuste a versão do kubectl de acordo com seu cluster
+        version: 'v1.22.0'  # Ajuste a versão do kubectl de acordo com seu cluster
 
     # Obter o contexto do cluster EKS
     - name: Update kubeconfig
