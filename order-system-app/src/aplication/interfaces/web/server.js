@@ -12,8 +12,8 @@ const ProdutoRepository = require('../../../infrastructure/repositories/produtoR
 const PagamentoHttpClient = require('../../../infrastructure/http/pagamentoHttpClient');
 
 // Casos de uso (use cases)
-const PagamentoService = require('../../../core/user_cases/pagamentoUseServices');
-const PedidoService = require('../../../core/user_cases/pedidoUseServices');
+const PagamentoService = require('../../../core/user_cases/pagamentoService');
+const PedidoService = require('../../../core/user_cases/pedidoService');
 
 // Rotas
 const clienteRoutes = require('../../../aplication/interfaces/api/clienteRoutes');
