@@ -14,6 +14,7 @@ const PagamentoHttpClient = require('../../../infrastructure/http/pagamentoHttpC
 // Casos de uso (use cases)
 const PagamentoService = require('../../../core/user_cases/pagamentoService');
 const PedidoService = require('../../../core/user_cases/pedidoService');
+console.log(PedidoService);
 
 // Rotas
 const clienteRoutes = require('../../../aplication/interfaces/api/clienteRoutes');
