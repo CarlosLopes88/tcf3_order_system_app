@@ -39,4 +39,5 @@ jobs:
         kubectl apply -f ./order-system-app/k8s/appnode-service.yaml  # Aplica o manifesto de serviço da aplicação
 
     - name: Verify Deployment  # Nome da etapa: Verificar o status do deployment no Kubernetes
-      run: kubectl rollout status deployment/node-app  # Comando para verificar se o deployment foi realizado com sucesso
+      run: kubectl rollout status deployment/node-app  # Comando para verificar se o deployment foi realizado com sucesso.
+      
