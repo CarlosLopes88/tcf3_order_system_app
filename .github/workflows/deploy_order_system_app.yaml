@@ -1,37 +1,42 @@
+# Nome do workflow, que é responsável pelo deploy da aplicação Order System
 name: Deploy Order System App
 
+# Evento que dispara o workflow: um push para o branch 'main'
 on:
   push:
     branches:
-      - main
+      - main  # Este workflow será executado quando houver um push para o branch 'main'
 
+# Definição dos trabalhos (jobs) a serem realizados no workflow
 jobs:
   deploy:
+    # Especifica o ambiente no qual o job será executado. Neste caso, uma máquina virtual Ubuntu mais recente
     runs-on: ubuntu-latest
 
+    # Etapas (steps) que serão executadas
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - name: Checkout code  # Nome da etapa: Fazer checkout do código do repositório
+      uses: actions/checkout@v2  # Usa a ação oficial para baixar o código do repositório GitHub para o runner
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+    - name: Configure AWS credentials  # Nome da etapa: Configurar credenciais da AWS
+      uses: aws-actions/configure-aws-credentials@v1  # Ação oficial da AWS para configurar credenciais
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Usa as credenciais armazenadas no GitHub Secrets
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # AWS_SECRET_ACCESS_KEY armazenado como segredo
+        aws-region: ${{ secrets.AWS_REGION }}  # Região AWS definida nos segredos do repositório
 
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v1
+    - name: Install kubectl  # Nome da etapa: Instalar a ferramenta kubectl, usada para gerenciar o Kubernetes
+      uses: azure/setup-kubectl@v1  # Ação oficial do Azure para instalar o kubectl
       with:
-        version: 'v1.22.0'
+        version: 'v1.22.0'  # Especifica a versão do kubectl a ser instalada (neste caso, v1.22.0)
 
-    - name: Update kubeconfig
-      run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name my-eks-cluster
+    - name: Update kubeconfig  # Nome da etapa: Atualizar a configuração do kubeconfig para conectar ao cluster EKS
+      run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name my-eks-cluster  # Atualiza o arquivo kubeconfig para conectar ao cluster EKS da AWS
 
-    - name: Deploy app to Kubernetes
-      run: |
-        kubectl apply -f ./order-system-app/k8s/appnode-deployment.yaml
-        kubectl apply -f ./order-system-app/k8s/appnode-service.yaml
+    - name: Deploy app to Kubernetes  # Nome da etapa: Fazer o deploy da aplicação para o cluster Kubernetes
+      run: |  # Comando de múltiplas linhas para aplicar os manifestos YAML do Kubernetes
+        kubectl apply -f ./order-system-app/k8s/appnode-deployment.yaml  # Aplica o manifesto de deployment da aplicação
+        kubectl apply -f ./order-system-app/k8s/appnode-service.yaml  # Aplica o manifesto de serviço da aplicação
 
-    - name: Verify Deployment
-      run: kubectl rollout status deployment/node-app
+    - name: Verify Deployment  # Nome da etapa: Verificar o status do deployment no Kubernetes
+      run: kubectl rollout status deployment/node-app  # Comando para verificar se o deployment foi realizado com sucesso
