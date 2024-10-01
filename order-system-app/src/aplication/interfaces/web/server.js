@@ -9,7 +9,7 @@ const db = require('../../../infrastructure/dbconnect');
 const ClienteRepository = require('../../../infrastructure/repositories/clienteRepository');
 const PedidoRepository = require('../../../infrastructure/repositories/pedidoRepository');
 const ProdutoRepository = require('../../../infrastructure/repositories/produtoRepository');
-const PagamentoHttpClient = require('../../../infrastructure/http/pagamentoHttpClient');
+const PagamentoHttpClient = require('../../../infrastructure/http/pagamentoHttpClient'); // Corrigido
 
 // Casos de uso (use cases)
 const PagamentoService = require('../../../core/user_cases/pagamentoService');
@@ -26,7 +26,7 @@ const webhookRoutes = require('../../../aplication/interfaces/api/webhookRoutes'
 const clienteRepository = new ClienteRepository();
 const pedidoRepository = new PedidoRepository();
 const produtoRepository = new ProdutoRepository();
-const pagamentoHttpClient = new PagamentoHttpClient();
+const pagamentoHttpClient = new PagamentoHttpClient(); // Corrigido, agora estamos instanciando a classe
 
 // Injetando dependências nos casos de uso
 const pagamentoService = new PagamentoService(clienteRepository, pedidoRepository, pagamentoHttpClient);
