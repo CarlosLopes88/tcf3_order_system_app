@@ -12,4 +12,4 @@ class PagamentoHttpClient {
     }
 }
 
-module.exports = new PagamentoHttpClient();
+module.exports = PagamentoHttpClient();

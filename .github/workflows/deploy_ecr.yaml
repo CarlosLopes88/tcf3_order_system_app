@@ -39,4 +39,4 @@ jobs:
     - name: Push Docker image to Amazon ECR
       run: |
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/order-system-app:latest  
-        # Faz o push da imagem para o repositório ECR correspondente ao AWS_ACCOUNT_ID na região especificada.
+      # Faz o push da imagem para o repositório ECR correspondente ao AWS_ACCOUNT_ID na região especificada.
