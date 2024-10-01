@@ -27,4 +27,4 @@ class PedidoService {
     }
 }
 
-module.exports = new PedidoService();
+module.exports = PedidoService();
