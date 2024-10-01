@@ -12,4 +12,4 @@ class PagamentoHttpClient {
     }
 }
 
-module.exports = PagamentoHttpClient();
+module.exports = PagamentoHttpClient;  // Exporte a classe, e não uma instância
