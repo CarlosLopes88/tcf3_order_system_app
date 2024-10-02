@@ -2,7 +2,7 @@ name: Deploy ECR  # Nome do workflow que será executado para realizar o deploy 
 
 # O workflow será acionado quando houver um push na branch 'main'.
 on:
-  push:
+  pull_request:
     branches:
       - main
 
